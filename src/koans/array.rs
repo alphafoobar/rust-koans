@@ -3,7 +3,7 @@
 #[test]
 fn array_index() {
     let arr: [i32; 5] = [1, 2, 3, 4, 5];
-    assert!(arr[__] == 1);
+    assert_that!(arr[0]).is_equal_to(1);
 }
 
 // A new fixed size array can be created by declaring the type of its elements
@@ -11,8 +11,8 @@ fn array_index() {
 // [i32; 0] = []
 #[test]
 fn array_empty() {
-    let arr: __;
-    assert!(arr.len() == 0);
+    let arr: [i32; 0] = [];
+    assert_that!(arr.len()).is_equal_to(0);
 }
 
 // Attempting to access an array at an index that is
@@ -21,9 +21,10 @@ fn array_empty() {
 #[test]
 #[should_panic]
 #[allow(const_err)]
+#[allow(unconditional_panic)]
 fn out_of_index() {
     let arr: [&'static str; 5] = ["rust", "is", "mostly", "for", "nerds"];
-    arr[__];
+    arr[5];
 }
 
 // Elements can be replaced in an array at a certain index.
@@ -31,8 +32,8 @@ fn out_of_index() {
 #[test]
 fn insert_at_index() {
     let mut arr: [u8; 5] = [0, 1, 2, 3, 4];
-    __ = 0;
-    assert!(arr == [0, 1, 2, 3, 0]);
+    arr[4] = 0;
+    assert_that!(&arr).is_equal_to([0, 1, 2, 3, 0]);
 }
 
 // Arrays can be iterated over.
@@ -40,40 +41,41 @@ fn insert_at_index() {
 fn array_iteration() {
     let arr: [u8; 3] = [3, 2, 1];
     let mut iterator = arr.iter();
-    assert!(iterator.next().unwrap() == &__);
-    assert!(iterator.next().unwrap() == &__);
-    assert!(iterator.next().unwrap() == &__);
+    assert_that!(iterator.next().unwrap()).is_equal_to(&3);
+    assert_that!(iterator.next().unwrap()).is_equal_to(&2);
+    assert_that!(iterator.next().unwrap()).is_equal_to(&1);
 }
 
 // Arrays can also be mutated during iteration
 #[test]
 fn array_map() {
     let arr: [u32; 4] = [2, 5, 7, 4];
-    let mut iterator = arr.iter().map(__);
-    assert!(iterator.next() == Some(4));
-    assert!(iterator.next() == Some(10));
-    assert!(iterator.next() == Some(14));
-    assert!(iterator.next() == Some(8));
+    let mut iterator = arr.iter().map(|x| x * 2);
+    assert_that!(iterator.next()).is_equal_to(Some(4));
+    assert_that!(iterator.next()).is_equal_to(Some(10));
+    assert_that!(iterator.next()).is_equal_to(Some(14));
+    assert_that!(iterator.next()).is_equal_to(Some(8));
 }
 
 // You can filter an array for results that match a given condition
 #[test]
 fn array_filter() {
     let arr: [u16; 5] = [1, 2, 3, 4, 5];
-    let mut iterator = arr.iter().filter(__);
-    assert!(iterator.next().unwrap() == &2);
-    assert!(iterator.next().unwrap() == &4);
-    assert!(iterator.next().is_none());
+    let mut iterator = arr.iter().filter(|&x| x % 2 == 0);
+    assert_that!(iterator.next()).is_equal_to(Some(&2));
+    assert_that!(iterator.next()).is_equal_to(Some(&4));
+    assert_that!(iterator.next()).is_none();
 }
 
 // Filter and map can be combined to do both at once
 #[test]
 fn array_filter_map() {
     let arr: [u8; 5] = [2, 1, 2, 1, 2];
-    let mut iterator = arr.iter().filter_map(|&x| if x == 1 { Some(__) } else { None });
-    assert!(iterator.next() == Some(3));
-    assert!(iterator.next() == Some(3));
-    assert!(iterator.next().is_none());
+    let mut iterator = arr.iter()
+        .filter_map(|&x| if x == 1 { Some(3) } else { None });
+    assert_that!(iterator.next()).is_equal_to(Some(3));
+    assert_that!(iterator.next()).is_equal_to(Some(3));
+    assert_that!(iterator.next()).is_none();
 }
 
 // This can be used for more complex logic as well
@@ -86,9 +88,9 @@ fn complex_array_filter_map() {
         } else {
             None
         });
-    assert!(iterator.next().unwrap() == __);
-    assert!(iterator.next().unwrap() == __);
-    assert!(iterator.next().is_none());
+    assert_that!(iterator.next()).is_equal_to(Some(2));
+    assert_that!(iterator.next()).is_equal_to(Some(4));
+    assert_that!(iterator.next()).is_none();
 }
 
 // Arrays can also be iterated through using a for loop
@@ -97,8 +99,8 @@ fn for_loops() {
     let arr: [u64; 3] = [1, 2, 3];
     let mut y: u64 = 1;
     for x in &arr {
-        assert!(*x == y);
-        __
+        assert_that!(x).is_equal_to(&y);
+        y = y + 1;
     }
 }
 
@@ -107,9 +109,14 @@ fn for_loops() {
 fn for_loops_two() {
     let words: [&'static str; 3] = ["I", "love", "Rust"];
     let mut sentence: String = String::new();
+    let mut remaining = words.len();
     for word in words.iter() {
-        __
+        remaining = remaining - 1;
+        sentence = sentence + word;
+        if remaining > 0 {
+            sentence = sentence + " ";
+        }
     }
     println!("{:?}", sentence);
-    assert!(sentence == "I love Rust".to_string());
+    assert_that!(sentence).is_equal_to( "I love Rust".to_string());
 }

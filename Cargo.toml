@@ -3,3 +3,7 @@ name = "koans"
 version = "0.2.2"
 authors = ["Mike MacDonald <crazymykl@gmail.com>"]
 build = "build.rs"
+
+[dev-dependencies]
+speculoos = "0.8.0"
+mockall = "0.10.2"

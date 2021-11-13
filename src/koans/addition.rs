@@ -1,4 +1,5 @@
 #[test]
 fn addition() {
-    assert_eq!(1 + __, 2)
+    let actual = 1 + 1;
+    assert_that!(actual).is_equal_to(2)
 }

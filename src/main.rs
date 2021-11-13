@@ -1,3 +1,7 @@
+// externing crate for test-only use
+#[cfg(test)]
+extern crate speculoos;
+
 #[cfg(not(test))]
 use std::process::Command;
 
