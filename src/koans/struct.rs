@@ -88,4 +88,5 @@ fn dot_merging() {
 
     assert_eq!(rich.holder, "Morgan Stanley");
     assert_eq!(rich.balance, 1000000.00);
+    assert_eq!(rich.account_number, "00021948523756312");
 }
